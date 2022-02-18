@@ -1,9 +1,11 @@
 import { MovieCard } from "./MovieCard";
+import { ColumnSizer, Grid, GridCellRenderer } from "react-virtualized";
+import { Header } from "./Header";
 
 interface ContentProps {
   selectedGenre: {
     id: number;
-    name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
+    name: "action" | "comedy" | "documentary" | "drama" | "horror" | "family";
     title: string;
   };
 
@@ -20,19 +22,39 @@ interface ContentProps {
 }
 
 export function Content({ selectedGenre, movies }: ContentProps) {
+  const rowRenderer: GridCellRenderer = ({ key, style, columnIndex }) => {
+    return (
+      <div className="movies-list" key={key} style={style}>
+        <MovieCard movie={movies[columnIndex]} />
+      </div>
+    );
+  };
+
   return (
     <div className="container">
-      <header>
-        <span className="category">Categoria:<span> {selectedGenre.title}</span></span>
-      </header>
+      <Header title={selectedGenre.title} />
 
-      <main>
-        <div className="movies-list">
-          {movies.map(movie => (
-            <MovieCard key={movie.imdbID} title={movie.Title} poster={movie.Poster} runtime={movie.Runtime} rating={movie.Ratings[0].Value} />
-          ))}
-        </div>
+      <main style={{ width: "100%", height: "100%" }}>
+        <ColumnSizer
+          columnMaxWidth={1000}
+          columnMinWidth={1000}
+          columnCount={3}
+          width={1000}
+        >
+          {({ adjustedWidth, getColumnWidth, registerChild }) => (
+            <Grid
+              ref={registerChild}
+              columnWidth={getColumnWidth}
+              columnCount={3}
+              cellRenderer={rowRenderer}
+              height={1000}
+              rowCount={3}
+              rowHeight={400}
+              width={adjustedWidth}
+            />
+          )}
+        </ColumnSizer>
       </main>
     </div>
-  )
+  );
 }
