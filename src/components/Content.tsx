@@ -1,6 +1,7 @@
 import { MovieCard } from "./MovieCard";
 import { ColumnSizer, Grid, GridCellRenderer } from "react-virtualized";
 import { Header } from "./Header";
+import { memo } from "react";
 
 interface ContentProps {
   selectedGenre: {
@@ -21,7 +22,7 @@ interface ContentProps {
   }>;
 }
 
-export function Content({ selectedGenre, movies }: ContentProps) {
+function ContentComponent({ selectedGenre, movies }: ContentProps) {
   const rowRenderer: GridCellRenderer = ({ key, style, columnIndex }) => {
     return (
       <div className="movies-list" key={key} style={style}>
@@ -58,3 +59,5 @@ export function Content({ selectedGenre, movies }: ContentProps) {
     </div>
   );
 }
+
+export const Content = memo(ContentComponent);
